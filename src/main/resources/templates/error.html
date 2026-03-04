@@ -3,19 +3,27 @@
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'error')}">
 
 <body>
-  <img src="../static/resources/images/pets.png" th:src="@{/resources/images/pets.png}" />
-  <!-- Title: Something happened -->
-  <h2 th:text="#{somethingHappened}">Something happened...</h2>
 
-  <!-- Status-specific error message -->
-  <p th:switch="${status}">
-    <span th:case="404" th:text="#{error.404}">The requested page was not found.</span>
-    <span th:case="500" th:text="#{error.500}">An internal server error occurred.</span>
-    <span th:case="*" th:text="#{error.general}">An unexpected error occurred.</span>
-  </p>
+  <div style="text-align:center;padding:5rem 2rem;max-width:560px;margin:0 auto;">
+    <div style="font-size:5rem;margin-bottom:1.5rem;">🚨</div>
+    <h2 style="font-size:2.5rem;margin-bottom:1rem;">Something went wrong</h2>
+    <p style="color:var(--text-secondary);font-size:1rem;line-height:1.7;margin-bottom:2rem;">
+      An unexpected error occurred. Our team has been notified. Please try again or return to the homepage.
+    </p>
 
-  <!-- Exception message (for developers) -->
-  <p th:text="${message}">Exception message</p>
+    <div th:if="${exception}" style="background:var(--cream);border:1px solid var(--cream-dark);border-radius:12px;padding:1.25rem;text-align:left;margin-bottom:2rem;">
+      <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.5rem;">Error Details</div>
+      <code style="font-size:0.82rem;color:#c0392b;word-break:break-all;" th:text="${exception}"></code>
+    </div>
+
+    <a href="/" class="btn btn-primary" style="margin-right:0.75rem;">
+      <span class="fa fa-home"></span> Go Home
+    </a>
+    <a href="javascript:history.back()" class="btn btn-secondary">
+      <span class="fa fa-arrow-left"></span> Go Back
+    </a>
+  </div>
+
 </body>
 
 </html>

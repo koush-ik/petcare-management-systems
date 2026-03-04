@@ -4,22 +4,55 @@
 
 <body>
 
-  <h2 th:text="#{owner}">Owner</h2>
-  <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
-    <div class="form-group has-feedback">
-      <input th:replace="~{fragments/inputField :: input (#{firstName}, 'firstName', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{lastName}, 'lastName', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{address}, 'address', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{city}, 'city', 'text')}" />
-      <input th:replace="~{fragments/inputField :: input (#{telephone}, 'telephone', 'text')}" />
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button th:with="text=${owner['new']} ? #{addOwner} : #{updateOwner}" class="btn btn-primary" type="submit"
-          th:text="${text}">Add Owner</button>
+  <div class="page-header-bar">
+    <h2>
+      <th:block th:if="${owner['new']}">New Owner</th:block>
+      <th:block th:unless="${owner['new']}">Edit Owner</th:block>
+    </h2>
+  </div>
+
+  <div class="form-card">
+    <form th:object="${owner}" class="form-horizontal" method="post">
+      <div class="form-group" th:classappend="${#fields.hasErrors('firstName')} ? 'has-error'">
+        <label th:text="#{firstName}">First Name</label>
+        <input type="text" th:field="*{firstName}" placeholder="First name" />
+        <span class="help-block" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Error</span>
       </div>
-    </div>
-  </form>
+
+      <div class="form-group" th:classappend="${#fields.hasErrors('lastName')} ? 'has-error'">
+        <label th:text="#{lastName}">Last Name</label>
+        <input type="text" th:field="*{lastName}" placeholder="Last name" />
+        <span class="help-block" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Error</span>
+      </div>
+
+      <div class="form-group" th:classappend="${#fields.hasErrors('address')} ? 'has-error'">
+        <label th:text="#{address}">Address</label>
+        <input type="text" th:field="*{address}" placeholder="Street address" />
+        <span class="help-block" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Error</span>
+      </div>
+
+      <div class="form-group" th:classappend="${#fields.hasErrors('city')} ? 'has-error'">
+        <label th:text="#{city}">City</label>
+        <input type="text" th:field="*{city}" placeholder="City" />
+        <span class="help-block" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Error</span>
+      </div>
+
+      <div class="form-group" th:classappend="${#fields.hasErrors('telephone')} ? 'has-error'">
+        <label th:text="#{telephone}">Telephone</label>
+        <input type="text" th:field="*{telephone}" placeholder="Phone number" />
+        <span class="help-block" th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}">Error</span>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" type="submit">
+          <span class="fa fa-check"></span>
+          <span th:if="${owner['new']}" th:text="#{addOwner}">Add Owner</span>
+          <span th:unless="${owner['new']}" th:text="#{updateOwner}">Update Owner</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
 </body>
 
 </html>

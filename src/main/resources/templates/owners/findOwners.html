@@ -4,31 +4,26 @@
 
 <body>
 
-  <h2 th:text="#{findOwners}">Find Owners</h2>
+  <div class="page-header-bar">
+    <h2 th:text="#{findOwners}">Find Owners</h2>
+  </div>
 
-  <form th:object="${owner}" th:action="@{/owners}" method="get" class="form-horizontal" id="search-owner-form">
-    <div class="form-group">
-      <div class="control-group" id="lastNameGroup">
-        <label class="col-sm-2 control-label" th:text="#{lastName}">Last name </label>
-        <div class="col-sm-10">
-          <input class="form-control" th:field="*{lastName}" size="30" maxlength="80" />
-          <span class="help-inline">
-            <div th:if="${#fields.hasAnyErrors()}">
-              <p th:each="err : ${#fields.allErrors()}" th:text="${err}">Error</p>
-            </div>
-          </span>
-        </div>
+  <div class="form-card">
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.5rem;">Search by last name, or leave blank to find all owners.</p>
+    <form th:object="${owner}" method="get">
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" th:field="*{lastName}" id="lastName" placeholder="e.g. Franklin" />
+        <span th:if="${#fields.hasErrors('lastName')}" class="help-block" th:errors="*{lastName}">Error</span>
       </div>
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary" th:text="#{findOwner}">Find Owner</button>
-      </div>
-    </div>
-
-    <a class="btn btn-primary" th:href="@{/owners/new}" th:text="#{addOwner}">Add Owner</a>
-
-  </form>
+      <button class="btn btn-primary" type="submit">
+        <span class="fa fa-search"></span> Find Owner
+      </button>
+      <a href="/owners/new" class="btn btn-amber" style="margin-left:0.75rem;">
+        <span class="fa fa-plus"></span> Add Owner
+      </a>
+    </form>
+  </div>
 
 </body>
 

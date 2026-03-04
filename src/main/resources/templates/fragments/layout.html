@@ -3,7 +3,6 @@
 <html th:fragment="layout (template, menu)" xmlns:th="https://www.thymeleaf.org">
 
 <head>
-
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,78 +10,895 @@
   <link rel="shortcut icon" type="image/x-icon" th:href="@{/resources/images/favicon.png}">
   <title th:text="#{layoutTitle}">PetClinic :: a Spring Framework demonstration</title>
   <link th:href="@{/webjars/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/resources/css/petclinic.css}" />
 
+  <style>
+    :root {
+      --forest: #1a3c2e;
+      --forest-mid: #2d5a42;
+      --forest-light: #3d7a5a;
+      --sage: #7aaa8a;
+      --sage-light: #a8c9b0;
+      --cream: #f8f4ed;
+      --cream-dark: #ede8df;
+      --warm-white: #fdfaf5;
+      --amber: #c98b2b;
+      --amber-light: #e8b45a;
+      --charcoal: #1c1c1e;
+      --text-primary: #2a2a2a;
+      --text-secondary: #5a5a5a;
+      --text-muted: #8a8a8a;
+      --card-shadow: 0 4px 24px rgba(26,60,46,0.10);
+      --card-shadow-hover: 0 8px 40px rgba(26,60,46,0.18);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--warm-white);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVBAR ─── */
+    /* Override Bootstrap's navbar styles that leak in from petclinic.css */
+    .navbar img, .navbar .logo, nav img { display: none !important; }
+
+    .navbar {
+      background: var(--forest) !important;
+      padding: 0 !important;
+      border-bottom: 3px solid var(--forest-light);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+    }
+
+    .navbar-inner {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      padding: 1.1rem 0;
+      margin-right: 2rem;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: var(--amber);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(201,139,43,0.4);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .brand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: 0.01em;
+    }
+
+    .brand-sub {
+      font-size: 0.65rem;
+      color: var(--sage);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: stretch;
+      list-style: none;
+      gap: 0;
+      flex: 1;
+    }
+
+    .nav-links li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 1.4rem;
+      height: 100%;
+      color: var(--sage-light);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: var(--transition);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .nav-links li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 3px;
+      background: var(--amber);
+      border-radius: 3px 3px 0 0;
+      transition: var(--transition);
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--cream);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .nav-links li a:hover::after,
+    .nav-links li a.active::after {
+      width: 60%;
+    }
+
+    .nav-links li a .fa {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .navbar-toggler {
+      display: none;
+      background: none;
+      border: 1.5px solid var(--sage);
+      border-radius: 8px;
+      color: var(--sage);
+      padding: 6px 10px;
+      cursor: pointer;
+      margin: auto 0 auto auto;
+    }
+
+    /* ─── PAGE WRAPPER ─── */
+    .page-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header-bar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--cream-dark);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--forest);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    h2::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 4px;
+      background: var(--amber);
+      border-radius: 2px;
+      margin-bottom: 8px;
+    }
+
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--forest-mid);
+      margin-bottom: 1rem;
+    }
+
+    /* ─── CARDS ─── */
+    .card-modern {
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,60,46,0.06);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .card-modern:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    /* ─── TABLES ─── */
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.9rem;
+    }
+
+    .table-wrapper {
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,60,46,0.06);
+      overflow: hidden;
+    }
+
+    .table thead tr {
+      background: var(--forest);
+    }
+
+    .table thead th {
+      color: var(--sage-light);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 1rem 1.25rem;
+      border: none;
+    }
+
+    .table tbody tr {
+      border-bottom: 1px solid var(--cream-dark);
+      transition: var(--transition);
+    }
+
+    .table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+      background: #f0f7f3;
+    }
+
+    .table tbody td {
+      padding: 1rem 1.25rem;
+      vertical-align: middle;
+      color: var(--text-primary);
+      border: none;
+    }
+
+    .table tbody th {
+      padding: 0.875rem 1.25rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--cream);
+      border: none;
+      border-bottom: 1px solid var(--cream-dark);
+      width: 160px;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0.65rem 1.4rem;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+
+    .btn-primary:hover {
+      background: var(--forest-light);
+      border-color: var(--forest-light);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(26,60,46,0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--forest);
+      border-color: var(--forest-mid);
+    }
+
+    .btn-secondary:hover {
+      background: var(--forest);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .btn-amber {
+      background: var(--amber);
+      color: white;
+      border-color: var(--amber);
+    }
+
+    .btn-amber:hover {
+      background: #b07825;
+      border-color: #b07825;
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(201,139,43,0.4);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    /* ─── LINKS IN TABLES ─── */
+    .table a {
+      color: var(--forest-light);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .table a:hover {
+      color: var(--amber);
+    }
+
+    /* ─── FORMS ─── */
+    .form-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,60,46,0.06);
+      padding: 2.5rem;
+      max-width: 640px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label, label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.45rem;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.925rem;
+      color: var(--text-primary);
+      background: var(--warm-white);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--forest-light);
+      box-shadow: 0 0 0 3px rgba(61,122,90,0.12);
+      background: white;
+    }
+
+    .has-error input,
+    .has-error select {
+      border-color: #e05252;
+      box-shadow: 0 0 0 3px rgba(224,82,82,0.1);
+    }
+
+    .help-block {
+      font-size: 0.78rem;
+      color: #e05252;
+      margin-top: 0.3rem;
+      display: block;
+    }
+
+    /* ─── ALERTS ─── */
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-success {
+      background: #e8f5ee;
+      color: #1a6b3c;
+      border: 1px solid #b6dfc5;
+    }
+
+    .alert-success::before { content: '✓'; font-weight: 700; }
+
+    .alert-danger {
+      background: #fde8e8;
+      color: #9b1c1c;
+      border: 1px solid #f5c2c2;
+    }
+
+    .alert-danger::before { content: '✕'; font-weight: 700; }
+
+    /* ─── PET TYPE BADGES ─── */
+    .pet-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--cream-dark);
+      color: var(--forest-mid);
+    }
+
+    /* ─── PAGINATION ─── */
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--cream-dark);
+      flex-wrap: wrap;
+    }
+
+    .pagination-wrapper a,
+    .pagination-wrapper span.fa {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: white;
+      border: 1.5px solid var(--cream-dark);
+      color: var(--forest);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .pagination-wrapper a:hover {
+      background: var(--forest);
+      color: white;
+      border-color: var(--forest);
+    }
+
+    .pagination-wrapper span:not(.fa) {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ─── OWNER DETAIL ─── */
+    .owner-profile {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,60,46,0.06);
+      margin-bottom: 2rem;
+    }
+
+    .owner-avatar {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--forest-mid), var(--forest-light));
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(26,60,46,0.25);
+    }
+
+    .owner-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem 2rem;
+    }
+
+    .owner-info-item label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .owner-info-item span {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ─── PET CARDS ─── */
+    .pet-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,60,46,0.06);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .pet-card-header {
+      background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .pet-emoji {
+      font-size: 2rem;
+      width: 52px;
+      height: 52px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pet-card-title { color: white; font-weight: 700; font-size: 1.1rem; }
+    .pet-card-meta { color: var(--sage-light); font-size: 0.82rem; margin-top: 2px; }
+
+    .pet-card-body { padding: 1.25rem 1.5rem; }
+
+    .pet-card-actions {
+      padding: 0.75rem 1.5rem;
+      background: var(--cream);
+      border-top: 1px solid var(--cream-dark);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* ─── VET LIST SPECIALTIES ─── */
+    .specialty-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      background: linear-gradient(135deg, var(--forest), var(--forest-mid));
+      color: var(--sage-light);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin: 2px;
+    }
+
+    .no-specialty {
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      background: var(--forest);
+      color: var(--sage);
+      text-align: center;
+      padding: 2.5rem 2rem;
+      margin-top: 4rem;
+    }
+
+    .site-footer img.logo {
+      height: 32px;
+      opacity: 0.6;
+      filter: brightness(0) invert(1);
+      margin-bottom: 1rem;
+    }
+
+    .site-footer p {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-top: 0.5rem;
+    }
+
+    /* ─── WELCOME PAGE ─── */
+    .welcome-hero {
+      background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 60%, var(--forest-light) 100%);
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 420px;
+    }
+
+    .welcome-hero-content {
+      padding: 4rem 3rem;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .welcome-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      color: #ffffff !important;
+    }
+
+    .welcome-hero h1 span {
+      color: #e8b45a !important;
+    }
+
+    .welcome-hero p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.85) !important;
+      max-width: 420px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .welcome-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .welcome-cta a {
+      padding: 0.8rem 1.8rem;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .welcome-cta a.cta-primary {
+      background: #c98b2b;
+      color: #ffffff !important;
+      box-shadow: 0 4px 16px rgba(201,139,43,0.4);
+    }
+
+    .welcome-cta a.cta-primary:hover {
+      background: #e8b45a;
+      transform: translateY(-2px);
+      color: #ffffff !important;
+    }
+
+    .welcome-cta a.cta-secondary {
+      background: rgba(255,255,255,0.12);
+      color: #ffffff !important;
+      border: 1.5px solid rgba(255,255,255,0.35);
+    }
+
+    .welcome-cta a.cta-secondary:hover {
+      background: rgba(255,255,255,0.22);
+      color: #ffffff !important;
+    }
+
+    .welcome-hero-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block !important;
+      opacity: 1 !important;
+    }
+
+    .welcome-hero-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--forest) 0%, transparent 35%);
+      pointer-events: none;
+    }
+
+    .welcome-image { display: none !important; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(26,60,46,0.06);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--card-shadow-hover);
+    }
+
+    .stat-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.green  { background: #e8f5ee; }
+    .stat-icon.amber  { background: #fdf3e3; }
+    .stat-icon.blue   { background: #e8f0fd; }
+
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--forest);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .navbar-inner { padding: 0 1rem; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--forest); padding: 1rem; }
+      .nav-links.open { display: flex; }
+      .nav-links li a { padding: 0.75rem 1rem; border-radius: 8px; }
+      .navbar-toggler { display: block; }
+      .page-wrapper { padding: 1.5rem 1rem 3rem; }
+      .welcome-hero { grid-template-columns: 1fr; min-height: auto; }
+      .welcome-hero-content { padding: 2.5rem 1.5rem; }
+      .welcome-hero h1 { font-size: 2rem; }
+      .welcome-hero-image { height: 220px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .owner-profile { grid-template-columns: 1fr; }
+      .owner-info-grid { grid-template-columns: 1fr; }
+      .welcome-image { display: none; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
-    <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/}"><span></span></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar">
-        <span class="navbar-toggler-icon"></span>
+  <nav class="navbar" role="navigation">
+    <div class="navbar-inner">
+      <a class="navbar-brand" th:href="@{/}">
+        <div class="brand-icon">🐾</div>
+        <div class="brand-text">
+          <span class="brand-title">PetClinic</span>
+          <span class="brand-sub">Veterinary Care</span>
+        </div>
+      </a>
+
+      <button class="navbar-toggler" onclick="document.getElementById('nav-links').classList.toggle('open')">
+        <span class="fa fa-bars"></span>
       </button>
-      <div class="collapse navbar-collapse" id="main-navbar" style>
 
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0" th:remove="all">
+      <ul class="nav-links" id="nav-links">
 
-          <li th:fragment="menuItem (link,active,title,glyph,text)" th:class="nav-item">
-            <a th:class="${active==menu ? 'nav-link active' : 'nav-link'}" th:href="@{__${link}__}" th:title="${title}">
-              <span th:class="'fa fa-'+${glyph}" class="fa fa-home"></span>
-              <span th:text="${text}">Template</span>
-            </a>
-          </li>
+        <li th:fragment="menuItem (link,active,title,glyph,text)" class="nav-item">
+          <a th:class="${active==menu ? 'active' : ''}" th:href="@{__${link}__}" th:title="${title}">
+            <span th:class="'fa fa-'+${glyph}"></span>
+            <span th:text="${text}">Template</span>
+          </a>
+        </li>
 
-        </ul>
+        <li th:replace="~{::menuItem ('/','home','home page','home',#{home})}">
+          <a><span class="fa fa-home"></span><span>Home</span></a>
+        </li>
+        <li th:replace="~{::menuItem ('/owners/find','owners','find owners','search',#{findOwners})}">
+          <a><span class="fa fa-search"></span><span>Find Owners</span></a>
+        </li>
+        <li th:replace="~{::menuItem ('/vets.html','vets','veterinarians','stethoscope',#{vets})}">
+          <a><span class="fa fa-stethoscope"></span><span>Veterinarians</span></a>
+        </li>
+        <li th:replace="~{::menuItem ('/oups','error','trigger error','exclamation-triangle',#{error})}">
+          <a><span class="fa fa-exclamation-triangle"></span><span>Error</span></a>
+        </li>
 
-        <ul class="nav navbar-nav me-auto">
-
-          <li th:replace="~{::menuItem ('/','home','home page','home',#{home})}">
-            <span class="fa fa-home" aria-hidden="true"></span>
-            <span th:text="#{home}">Home</span>
-          </li>
-
-          <li th:replace="~{::menuItem ('/owners/find','owners','find owners','search',#{findOwners})}">
-            <span class="fa fa-search" aria-hidden="true"></span>
-            <span th:text="#{findOwners}">Find owners</span>
-          </li>
-
-          <li th:replace="~{::menuItem ('/vets.html','vets','veterinarians','th-list',#{vets})}">
-            <span class="fa fa-th-list" aria-hidden="true"></span>
-            <span th:text="#{vets}">Veterinarians</span>
-          </li>
-
-          <li
-            th:replace="~{::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','exclamation-triangle',#{error})}">
-            <span class="fa exclamation-triangle" aria-hidden="true"></span>
-            <span th:text="#{error}">Error</span>
-          </li>
-
-        </ul>
-      </div>
+      </ul>
     </div>
   </nav>
-  <div class="container-fluid">
-    <div class="container xd-container">
 
-      <th:block th:insert="${template}" />
-
-      <br />
-      <br />
-      <div class="container">
-        <div class="row">
-          <div class="col-12 text-center">
-            <img src="../static/images/spring-logo.svg" th:src="@{/resources/images/spring-logo.svg}"
-              alt="VMware Tanzu Logo" class="logo">
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="page-wrapper">
+    <th:block th:insert="${template}" />
   </div>
+
+  <footer class="site-footer">
+    <div>
+      <img src="../static/images/spring-logo.svg"
+           th:src="@{/resources/images/spring-logo.svg}"
+           alt="Spring Logo" class="logo">
+      <p>PetClinic &mdash; Built with Spring Boot &amp; Thymeleaf</p>
+    </div>
+  </footer>
 
   <script th:src="@{/webjars/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
 
 </body>
-
 </html>

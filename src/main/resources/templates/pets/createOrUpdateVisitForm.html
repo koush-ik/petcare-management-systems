@@ -4,55 +4,72 @@
 
 <body>
 
-  <h2>
-    <th:block th:if="${visit['new']}" th:text="#{new}">New </th:block>
-    Visit
-  </h2>
+  <div class="page-header-bar">
+    <h2>
+      <th:block th:if="${visit['new']}">New Visit</th:block>
+      <th:block th:unless="${visit['new']}">Edit Visit</th:block>
+    </h2>
+  </div>
 
-  <b th:text="#{pet}">Pet</b>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th th:text="#{name}">Name</th>
-        <th th:text="#{birthDate}">Birth Date</th>
-        <th th:text="#{type}">Type</th>
-        <th th:text="#{owner}">Owner</th>
-      </tr>
-    </thead>
-    <tr>
-      <td th:text="${pet.name}"></td>
-      <td th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}"></td>
-      <td th:text="${pet.type}"></td>
-      <td th:text="${owner?.firstName + ' ' + owner?.lastName}"></td>
-    </tr>
-  </table>
-
-  <form th:object="${visit}" class="form-horizontal" method="post">
-    <div class="form-group has-feedback">
-      <input th:replace="~{fragments/inputField :: input ('Date', 'date', 'date')}" />
-      <input th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
-    </div>
-
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <input type="hidden" name="petId" th:value="${pet.id}" />
-        <button class="btn btn-primary" type="submit" th:text="#{addVisit}">Add Visit</button>
+  <!-- Pet Info Card -->
+  <div class="card-modern" style="padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1.25rem;">
+    <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--forest-mid),var(--forest-light));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">🐾</div>
+    <div>
+      <div style="font-weight:700;font-size:1.05rem;color:var(--forest);" th:text="${pet.name}">Pet Name</div>
+      <div style="font-size:0.82rem;color:var(--text-muted);margin-top:3px;">
+        <span th:text="${pet.type}"></span>
+        &nbsp;·&nbsp; Born <span th:text="${#temporals.format(pet.birthDate, 'MMM dd, yyyy')}"></span>
+        &nbsp;·&nbsp; Owner: <span th:text="${owner?.firstName + ' ' + owner?.lastName}"></span>
       </div>
     </div>
-  </form>
+  </div>
 
-  <br />
-  <b th:text="#{previousVisits}">Previous Visits</b>
-  <table class="table table-striped">
-    <tr>
-      <th th:text="#{date}">Date</th>
-      <th th:text="#{description}">Description</th>
-    </tr>
-    <tr th:if="${!visit['new']}" th:each="visit : ${pet.visits}">
-      <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
-      <td th:text=" ${visit.description}"></td>
-    </tr>
-  </table>
+  <!-- Visit Form -->
+  <div class="form-card">
+    <form th:object="${visit}" class="form-horizontal" method="post">
+      <div class="form-group" th:classappend="${#fields.hasErrors('date')} ? 'has-error'">
+        <label th:text="#{date}">Date</label>
+        <input type="date" th:field="*{date}" />
+        <span class="help-block" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Error</span>
+      </div>
+
+      <div class="form-group" th:classappend="${#fields.hasErrors('description')} ? 'has-error'">
+        <label th:text="#{description}">Description</label>
+        <input type="text" th:field="*{description}" placeholder="Reason for visit..." />
+        <span class="help-block" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</span>
+      </div>
+
+      <input type="hidden" name="petId" th:value="${pet.id}" />
+
+      <div class="btn-group">
+        <button class="btn btn-primary" type="submit">
+          <span class="fa fa-calendar-check-o"></span>
+          <span th:text="#{addVisit}">Add Visit</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Previous Visits -->
+  <div th:if="${!visit['new']}" style="margin-top:2rem;">
+    <h3 th:text="#{previousVisits}" style="margin-bottom:1rem;">Previous Visits</h3>
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th th:text="#{date}">Date</th>
+            <th th:text="#{description}">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="visit : ${pet.visits}">
+            <td th:text="${#temporals.format(visit.date, 'MMM dd, yyyy')}"></td>
+            <td th:text="${visit.description}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 </body>
 
