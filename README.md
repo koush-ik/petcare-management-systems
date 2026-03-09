@@ -1,114 +1,131 @@
-# 🐾 Pet Clinic Management System — Spring Boot MVC
+# 🐾 Spring PetClinic Management System
 
-A Spring Boot MVC web application for managing pet owners, pets, vets, and visits.  
-This project demonstrates layered architecture using Spring MVC, Thymeleaf, and JPA.
+A **full-stack web application** for managing a veterinary clinic — built with **Spring Boot MVC, Thymeleaf, JPA, and MySQL**, featuring a completely redesigned modern UI with multi-language support.
 
 ---
 
 ## 🚀 Features
 
-- Owner management
-- Pet registration
-- Visit scheduling
-- Vet management
-- Specialty mapping
-- Thymeleaf UI
-- Form validation
-- MVC architecture
-- JPA entity relationships
+- 🐶 **Pet & Owner Management** — Register owners, add pets, track history
+- 👨‍⚕️ **Veterinarian Management** — Manage vet profiles and specializations
+- 📅 **Visit Records** — Schedule and track pet visits
+- 🗄️ **Multi-Database Support** — H2 (dev), MySQL, PostgreSQL via Spring profiles
+- 🌍 **Multi-Language (i18n)** — 9 languages supported
+- 🎨 **Custom UI Redesign** — Forest green & amber design system using Bootstrap 5
+- ✅ **Full CRUD** — Create, Read, Update, Delete for all entities
 
 ---
 
-## 🧱 Architecture
+## 🛠️ Tech Stack
 
-Spring MVC layered pattern:
-
-Controller → Service → Repository → Database → Thymeleaf View
-
----
-
-## 🛠 Tech Stack
-
-- Java 17+
-- Spring Boot
-- Spring MVC
-- Spring Data JPA
-- Thymeleaf
-- H2 / MySQL (depending on config)
-- Maven
+| Layer | Technology |
+|-------|-----------|
+| Language | Java 17 |
+| Framework | Spring Boot 3.x / Spring MVC |
+| Template Engine | Thymeleaf |
+| ORM | Spring Data JPA / Hibernate |
+| Database | MySQL / PostgreSQL / H2 |
+| Frontend | Bootstrap 5, HTML, CSS |
+| Build Tool | Maven |
 
 ---
 
-## 📦 Core Modules
-
-- Owners
-- Pets
-- Visits
-- Vets
-- Specialties
-
----
-
-## 🔄 Application Flow
-
-1. User opens web UI
-2. Controller handles request
-3. Service executes business logic
-4. Repository fetches data
-5. Entities mapped via JPA
-6. Thymeleaf renders HTML view
-
----
-
-## 🧪 Demo Flow
-
-Find Owner → Add Owner → Add Pet → Schedule Visit → View Vet List
-
----
-
-## ▶️ Run Project
-
-Using Maven:
+## 📁 Project Structure
 
 ```
+src/
+├── main/
+│   ├── java/
+│   │   └── com/petclinic/
+│   │       ├── controller/      # MVC controllers
+│   │       ├── service/         # Business logic
+│   │       ├── repository/      # Spring Data JPA repos
+│   │       └── model/           # Entity classes (Owner, Pet, Vet, Visit, PetType)
+│   └── resources/
+│       ├── templates/           # Thymeleaf HTML templates
+│       ├── static/              # CSS, JS, images
+│       ├── messages/            # i18n language files (9 languages)
+│       └── application.properties
+```
+
+---
+
+## 🗃️ Database Schema
+
+```
+Owner ──< Pet >── PetType
+Pet   ──< Visit >── Vet
+Vet   ──< Speciality
+```
+
+**JPA Relationships:**
+- `Owner` → `Pet` : OneToMany
+- `Pet` → `Visit` : OneToMany
+- `Vet` → `Speciality` : ManyToMany
+
+---
+
+## ⚙️ Setup & Run
+
+### Prerequisites
+- Java 17+
+- MySQL 8+ (or use H2 for quick dev)
+- Maven 3.8+
+
+### Run with H2 (no setup needed)
+```bash
+git clone https://github.com/koush-ik/spring-petclinic-management.git
+cd spring-petclinic-management
+mvn spring-boot:run
+# Visit http://localhost:8080
+```
+
+### Run with MySQL
+```bash
+# Create database
+CREATE DATABASE petclinic_db;
+
+# Set profile in application.properties
+spring.profiles.active=mysql
+spring.datasource.url=jdbc:mysql://localhost:3306/petclinic_db
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+
 mvn spring-boot:run
 ```
 
-Or run main class:
+### Switch Database Profile
+```bash
+# H2 (default - in-memory)
+mvn spring-boot:run -Dspring-boot.run.profiles=default
 
-```
-PetClinicApplication.java
-```
+# MySQL
+mvn spring-boot:run -Dspring-boot.run.profiles=mysql
 
----
-
-## 🌐 Access Application
-
-Open browser:
-
-```
-http://localhost:8080
+# PostgreSQL
+mvn spring-boot:run -Dspring-boot.run.profiles=postgres
 ```
 
 ---
 
-## 📚 Learning Outcomes
+## 🌍 Supported Languages
 
-- Spring MVC architecture
-- Controller mappings
-- Form binding
-- Thymeleaf templates
-- JPA relationships
-- Layered design pattern
+English, Spanish, German, French, Portuguese, Dutch, Italian, Japanese, Korean
 
 ---
 
-## 👨‍💻 Project Type
+## 🎨 UI Highlights
 
-Spring Boot MVC reference application used to study and practice layered architecture and entity relationships.
+- Fully redesigned with **Bootstrap 5**
+- Forest green & amber color system
+- Responsive layout — works on mobile and desktop
+- Dynamic data binding and form validation via Thymeleaf
 
 ---
 
 ## 👨‍💻 Author
 
-Koushik Maddi
+**Koushik Maddi**  
+📧 koushikmaddi113@gmail.com  
+🔗 [LinkedIn](https://www.linkedin.com/in/koushik-maddi-b365972a6/)  
+🎓 B.Tech ECE — IIIT Surat (2022–2026)
